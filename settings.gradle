@@ -1,1 +1,1 @@
-include ':app', ':apt-annotation', ':apt-processor', ':apt-library'
+include ':example', ':apt-annotation', ':apt-processor', ':apt-library'

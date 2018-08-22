@@ -10,15 +10,16 @@ import com.engineer.apt_library.BindViewTools;
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.content)
-    TextView mTextview;
+    TextView mContext;
+    @BindView(R.id.name)
+    TextView mName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BindViewTools.bind(this);
-        if (mTextview != null) {
-            mTextview.setText("Hello APT");
-        }
+        mContext.setText("Hello APT");
+        mName.setText("APT Success");
     }
 }
