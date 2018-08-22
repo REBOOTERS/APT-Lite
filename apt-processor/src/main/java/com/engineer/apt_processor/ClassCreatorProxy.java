@@ -29,12 +29,12 @@ class ClassCreatorProxy {
 
     /**
      * 创建Java代码
-     * @return
+     * @return  code
      */
     public String generateJavaCode() {
         StringBuilder builder = new StringBuilder();
         builder.append("package ").append(mPackageName).append(";\n\n");
-        builder.append("import com.example.gavin.apt_library.*;\n");
+        builder.append("import com.engineer.apt_library.*;\n");
         builder.append('\n');
         builder.append("public class ").append(mBindingClassName);
         builder.append(" {\n");
@@ -47,16 +47,16 @@ class ClassCreatorProxy {
 
     /**
      * 加入Method
-     * @param builder
+     * @param builder StringBuilder
      */
     private void generateMethods(StringBuilder builder) {
-        builder.append("public void bind(" + mTypeElement.getQualifiedName() + " host ) {\n");
+        builder.append("public void bind(").append(mTypeElement.getQualifiedName()).append(" host ) {\n");
         for (int id : mVariableElementMap.keySet()) {
             VariableElement element = mVariableElementMap.get(id);
             String name = element.getSimpleName().toString();
             String type = element.asType().toString();
-            builder.append("host." + name).append(" = ");
-            builder.append("(" + type + ")(((android.app.Activity)host).findViewById( " + id + "));\n");
+            builder.append("host.").append(name).append(" = ");
+            builder.append("(").append(type).append(")(((android.app.Activity)host).findViewById( ").append(id).append("));\n");
         }
         builder.append("  }\n");
     }

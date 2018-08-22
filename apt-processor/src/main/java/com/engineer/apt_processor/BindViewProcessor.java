@@ -35,7 +35,7 @@ public class BindViewProcessor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         HashSet<String> supportTypes = new HashSet<>();
         supportTypes.add(BindView.class.getCanonicalName());
-        return super.getSupportedAnnotationTypes();
+        return supportTypes;
     }
 
     @Override

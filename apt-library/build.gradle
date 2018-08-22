@@ -1,10 +1,10 @@
 apply plugin: 'com.android.library'
-
+def ext = rootProject.ext
 android {
-    compileSdkVersion 26
+    compileSdkVersion ext.compileSdkVersion
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 26
+        minSdkVersion ext.minSdkVersion
+        targetSdkVersion ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -29,10 +29,9 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation "com.android.support:appcompat-v7:$ext.support_versioin"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation project(':apt-annotation')
-    implementation 'com.google.auto.service:auto-service:1.0-rc4'
+    api project(':apt-annotation')
 }

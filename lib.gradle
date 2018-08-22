@@ -1,0 +1,13 @@
+ext {
+    compileSdkVersion = 27
+    buildToolsVersion = '27.0.3'
+    minSdkVersion = 21
+    targetSdkVersion = 27
+
+    support_versioin = '27.1.1'
+    constraint_layout = '1.1.2'
+
+    gradle_version = '3.1.4'
+
+
+}
