@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class BindViewTools {
+
     public static void bind(Activity activity) {
 
         Class clazz = activity.getClass();

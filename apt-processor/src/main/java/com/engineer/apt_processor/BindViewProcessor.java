@@ -2,6 +2,7 @@ package com.engineer.apt_processor;
 
 import com.engineer.apt_annotation.BindView;
 import com.google.auto.service.AutoService;
+import com.squareup.javapoet.JavaFile;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -30,6 +31,7 @@ public class BindViewProcessor extends AbstractProcessor {
     private Messager mMessager;
     private Elements mElementUtils;
     private Map<String, ClassCreatorProxy> mProxyMap = new HashMap<>();
+    private Map<String, ClassCreatorProxyPro> mProxyProMap = new HashMap<>();
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
@@ -55,6 +57,49 @@ public class BindViewProcessor extends AbstractProcessor {
         mMessager.printMessage(Diagnostic.Kind.NOTE,"processing....");
         mProxyMap.clear();
 
+
+//        genCodeManu(roundEnvironment);
+
+        genCodeAuto(roundEnvironment);
+
+        return true;
+    }
+
+    private void genCodeAuto(RoundEnvironment roundEnvironment) {
+
+
+        Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(BindView.class);
+        for (Element element : elements) {
+            VariableElement variableElement= (VariableElement) element;
+            TypeElement classElement = (TypeElement) variableElement.getEnclosingElement();
+            String fullClassName=classElement.getQualifiedName().toString();
+            ClassCreatorProxyPro proxy = mProxyProMap.get(fullClassName);
+            if (proxy == null) {
+                proxy = new ClassCreatorProxyPro(mElementUtils, classElement);
+                mProxyProMap.put(fullClassName, proxy);
+            }
+
+            BindView bindAnnotation = variableElement.getAnnotation(BindView.class);
+            int id=bindAnnotation.value();
+            proxy.putElement(id,variableElement);
+        }
+
+
+        for (String key : mProxyProMap.keySet()) {
+            ClassCreatorProxyPro proxyPro = mProxyProMap.get(key);
+            try {
+                JavaFile javaFile = JavaFile.builder(proxyPro.getPackageName(),proxyPro.generatorJavaCode()).build();
+                javaFile.writeTo(processingEnv.getFiler());
+            } catch (Exception e) {
+                mMessager.printMessage(Diagnostic.Kind.NOTE, " --> create " + proxyPro.getProxyClassFullName() + "error");
+            }
+        }
+        mMessager.printMessage(Diagnostic.Kind.NOTE, "process finish ...");
+    }
+
+
+    private void genCodeManu(RoundEnvironment roundEnvironment) {
+
         Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(BindView.class);
         for (Element element : elements) {
             VariableElement variableElement= (VariableElement) element;
@@ -70,6 +115,8 @@ public class BindViewProcessor extends AbstractProcessor {
             int id=bindAnnotation.value();
             proxy.putElement(id,variableElement);
         }
+
+
 
         //通过遍历mProxyMap，创建java文件
         for (String key : mProxyMap.keySet()) {
@@ -87,6 +134,5 @@ public class BindViewProcessor extends AbstractProcessor {
         }
 
         mMessager.printMessage(Diagnostic.Kind.NOTE, "process finish ...");
-        return true;
     }
 }

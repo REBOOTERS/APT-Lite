@@ -40,6 +40,7 @@ class ClassCreatorProxy {
         builder.append(" {\n");
 
         generateMethods(builder);
+
         builder.append('\n');
         builder.append("}\n");
         return builder.toString();
