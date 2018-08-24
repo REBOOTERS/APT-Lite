@@ -1,8 +1,8 @@
 package com.engineer.apt_processor;
 
-import com.google.errorprone.annotations.Var;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.util.HashMap;
@@ -13,6 +13,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
+import javax.swing.text.View;
 
 /**
  * @version V1.0
@@ -28,6 +29,7 @@ public class ClassCreatorProxyPro {
     private String mPackageName;
     private TypeElement mTypeElement;
     private Map<Integer, VariableElement> mVariableElementMap = new HashMap<>();
+    private Map<int[], VariableElement> mOnClcikElementMap = new HashMap<>();
 
     public ClassCreatorProxyPro(Elements elementUtils, TypeElement classElement) {
         this.mTypeElement = classElement;
@@ -42,15 +44,20 @@ public class ClassCreatorProxyPro {
         mVariableElementMap.put(id, element);
     }
 
+    public void putElement(int[] ids, VariableElement element) {
+        mOnClcikElementMap.put(ids, element);
+    }
+
     public TypeSpec generatorJavaCode() {
         TypeSpec typeSpec = TypeSpec.classBuilder(mBindingClassName)
                 .addModifiers(Modifier.PUBLIC)
-                .addMethod(generateMethod())
+                .addMethod(generateViewBindMethod())
+//                .addMethod(generateViewOnClickBindMethod())
                 .build();
         return typeSpec;
     }
 
-    private MethodSpec generateMethod() {
+    private MethodSpec generateViewBindMethod() {
         ClassName className = ClassName.bestGuess(mTypeElement.getQualifiedName().toString());
         MethodSpec.Builder builder = MethodSpec.methodBuilder("bind")
                 .addModifiers(Modifier.PUBLIC)
@@ -64,6 +71,26 @@ public class ClassCreatorProxyPro {
             builder.addCode("host." + name + " = "
                     + "(" + type + ")(((android.app.Activity)host).findViewById( " + id + "));\n");
         }
+
+        return builder.build();
+    }
+
+    private MethodSpec generateViewOnClickBindMethod() {
+        ClassName className = ClassName.bestGuess(mTypeElement.getQualifiedName().toString());
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("onClick")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(TypeName.VOID)
+                .addParameter(View.class,"view");
+
+        for (int[] ids : mOnClcikElementMap.keySet()) {
+            VariableElement element = mOnClcikElementMap.get(ids);
+            String name = element.getSimpleName().toString();
+            String type = element.asType().toString();
+            for (int id : ids) {
+
+            }
+        }
+
         return builder.build();
     }
 

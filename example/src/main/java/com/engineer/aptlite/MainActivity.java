@@ -1,11 +1,14 @@
 package com.engineer.aptlite;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.engineer.apt_annotation.BindView;
 import com.engineer.apt_library.BindViewTools;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     TextView mContext;
     @BindView(R.id.name)
     TextView mName;
+    @BindView(R.id.genCode)
+    Button mGenCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,5 +26,8 @@ public class MainActivity extends AppCompatActivity {
         BindViewTools.bind(this);
         mContext.setText("Hello APT");
         mName.setText("APT Success");
+        mGenCode.setOnClickListener(v -> {
+
+        });
     }
 }
