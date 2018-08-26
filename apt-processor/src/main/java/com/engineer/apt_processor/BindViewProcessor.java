@@ -1,6 +1,7 @@
 package com.engineer.apt_processor;
 
 import com.engineer.apt_annotation.BindOnClick;
+import com.engineer.apt_annotation.BindString;
 import com.engineer.apt_annotation.BindView;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
@@ -34,6 +35,7 @@ public class BindViewProcessor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         HashSet<String> supportTypes = new HashSet<>();
         supportTypes.add(BindView.class.getCanonicalName());
+        supportTypes.add(BindString.class.getCanonicalName());
         supportTypes.add(BindOnClick.class.getCanonicalName());
         return supportTypes;
     }
@@ -77,6 +79,24 @@ public class BindViewProcessor extends AbstractProcessor {
             int id=bindAnnotation.value();
             proxy.putElement(id,variableElement);
         }
+
+        elements = roundEnvironment.getElementsAnnotatedWith(BindString.class);
+        for (Element element : elements) {
+            VariableElement variableElement = (VariableElement) element;
+            TypeElement classElement = (TypeElement) variableElement.getEnclosingElement();
+            String fullClassName = classElement.getQualifiedName().toString();
+            ClassCreatorProxyPro proxyPro = mProxyProMap.get(fullClassName);
+            if (proxyPro == null) {
+                proxyPro = new ClassCreatorProxyPro(mElementUtils, classElement);
+                mProxyProMap.put(fullClassName,proxyPro);
+            }
+
+            BindString bindString = variableElement.getAnnotation(BindString.class);
+            String str = bindString.value();
+            proxyPro.putElement(str,variableElement);
+        }
+
+
 
         elements = roundEnvironment.getElementsAnnotatedWith(BindOnClick.class);
         for (Element element : elements) {

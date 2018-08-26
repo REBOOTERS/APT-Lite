@@ -12,8 +12,13 @@ public class BindViewTools {
         Class clazz = activity.getClass();
         try {
             Class bindViewClass = Class.forName(clazz.getName() + "_ViewBinding");
+
             Method method = bindViewClass.getMethod("bind", activity.getClass());
             method.invoke(bindViewClass.newInstance(), activity);
+
+            Method methodBingString = bindViewClass.getMethod("bindString", activity.getClass());
+            methodBingString.invoke(bindViewClass.newInstance(), activity);
+
         } catch (ClassNotFoundException | IllegalAccessException |
                 InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
