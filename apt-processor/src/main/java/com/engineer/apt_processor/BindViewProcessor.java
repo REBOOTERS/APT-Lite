@@ -55,9 +55,11 @@ public class BindViewProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         mMessager.printMessage(Diagnostic.Kind.NOTE,"processing....");
+
         mProxyProMap.clear();
         genCodeAuto(roundEnvironment);
 
+        mMessager.printMessage(Diagnostic.Kind.NOTE, "process finish ...");
         return true;
     }
 
@@ -65,6 +67,8 @@ public class BindViewProcessor extends AbstractProcessor {
 
 
         Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(BindView.class);
+
+
         for (Element element : elements) {
             VariableElement variableElement= (VariableElement) element;
             TypeElement classElement = (TypeElement) variableElement.getEnclosingElement();
@@ -119,11 +123,12 @@ public class BindViewProcessor extends AbstractProcessor {
             ClassCreatorProxyPro proxyPro = mProxyProMap.get(key);
             try {
                 JavaFile javaFile = JavaFile.builder(proxyPro.getPackageName(),proxyPro.generatorJavaCode()).build();
+                mMessager.printMessage(Diagnostic.Kind.NOTE,"---> create file\n" + javaFile.toString());
                 javaFile.writeTo(processingEnv.getFiler());
             } catch (Exception e) {
                 mMessager.printMessage(Diagnostic.Kind.NOTE, " --> create " + proxyPro.getProxyClassFullName() + "error");
             }
         }
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "process finish ...");
+
     }
 }

@@ -66,7 +66,7 @@ public class ClassCreatorProxyPro {
 
     private MethodSpec generateViewBindMethod() {
         ClassName className = ClassName.bestGuess(mTypeElement.getQualifiedName().toString());
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("bind")
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("bindView")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
                 .addParameter(className, "host");

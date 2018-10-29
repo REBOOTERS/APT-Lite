@@ -13,8 +13,8 @@ public class BindViewTools {
         try {
             Class bindViewClass = Class.forName(clazz.getName() + "_ViewBinding");
 
-            Method method = bindViewClass.getMethod("bind", activity.getClass());
-            method.invoke(bindViewClass.newInstance(), activity);
+            Method bindView = bindViewClass.getMethod("bindView", activity.getClass());
+            bindView.invoke(bindViewClass.newInstance(), activity);
 
             Method methodBingString = bindViewClass.getMethod("bindString", activity.getClass());
             methodBingString.invoke(bindViewClass.newInstance(), activity);

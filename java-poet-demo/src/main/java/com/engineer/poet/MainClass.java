@@ -6,20 +6,29 @@ import com.squareup.javapoet.TypeSpec;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.lang.model.element.Modifier;
 
 public class MainClass {
 
-    public static void main(String[] args){
-        genSelfCode();
+    public static void main(String[] args) {
+        someTest();
+//        genSelfCode();
     }
 
-    private static void genSelfCode(){
+    private static void someTest() {
+        System.out.println("String.getCanonicalName==" + String.class.getCanonicalName());
+        System.out.println("ArrayList.getCanonicalName==" + ArrayList.class.getCanonicalName());
+        System.out.println("People.getCanonicalName==" + People.class.getCanonicalName());
+        System.out.println("MainClass.getCanonicalName==" + MainClass.class.getCanonicalName());
+    }
+
+    private static void genSelfCode() {
         MethodSpec methodSpec = MethodSpec.methodBuilder("main")
-                .addModifiers(Modifier.PUBLIC,Modifier.STATIC)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(void.class)
-                .addParameter(String[].class,"args")
+                .addParameter(String[].class, "args")
                 .addStatement("genSelfCode()")
                 .build();
 
@@ -28,13 +37,13 @@ public class MainClass {
                 .addMethod(methodSpec)
                 .build();
 
-        JavaFile javaFile = JavaFile.builder("com.engineer.poet",typeSpec)
-                .addStaticImport(com.squareup.javapoet.JavaFile.class,"*")
-                .addStaticImport(com.squareup.javapoet.MethodSpec.class,"*")
-                .addStaticImport(com.squareup.javapoet.TypeSpec.class,"*")
-                .addStaticImport(java.io.File.class,"*")
-                .addStaticImport(java.io.IOException.class,"*")
-                .addStaticImport(javax.lang.model.element.Modifier.class,"*")
+        JavaFile javaFile = JavaFile.builder("com.engineer.poet", typeSpec)
+                .addStaticImport(com.squareup.javapoet.JavaFile.class, "*")
+                .addStaticImport(com.squareup.javapoet.MethodSpec.class, "*")
+                .addStaticImport(com.squareup.javapoet.TypeSpec.class, "*")
+                .addStaticImport(java.io.File.class, "*")
+                .addStaticImport(java.io.IOException.class, "*")
+                .addStaticImport(javax.lang.model.element.Modifier.class, "*")
                 .build();
 
         File outputFile = new File("poet/build/");
