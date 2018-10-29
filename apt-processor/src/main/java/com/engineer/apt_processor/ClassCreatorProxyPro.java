@@ -1,6 +1,5 @@
 package com.engineer.apt_processor;
 
-import com.google.errorprone.annotations.Var;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
