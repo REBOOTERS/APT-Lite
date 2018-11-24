@@ -2,6 +2,7 @@ package com.engineer.aptlite;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -9,6 +10,8 @@ import com.engineer.apt_annotation.BindString;
 import com.engineer.apt_annotation.BindView;
 import com.engineer.apt_library.BindViewTools;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -25,8 +28,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BindViewTools.bind(this);
-        mGenCode.setOnClickListener(v -> {
 
-        });
+        mGenCode.setOnClickListener( v -> testcode());
+    }
+
+    private String testcode() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("111", "222");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+
     }
 }

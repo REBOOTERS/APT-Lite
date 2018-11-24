@@ -23,7 +23,7 @@ import javax.swing.text.View;
 public class ClassCreatorProxyPro {
 
 
-    public static final String VIEW_BINDING = "_ViewBinding";
+    public static final String VIEW_BINDING = "_Binding";
 
     private String mBindingClassName;
     private String mPackageName;

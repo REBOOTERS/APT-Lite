@@ -14,7 +14,7 @@ public class MainClass {
 
     public static void main(String[] args) {
         someTest();
-//        genSelfCode();
+        genSelfCode();
     }
 
     private static void someTest() {
@@ -22,6 +22,10 @@ public class MainClass {
         System.out.println("ArrayList.getCanonicalName==" + ArrayList.class.getCanonicalName());
         System.out.println("People.getCanonicalName==" + People.class.getCanonicalName());
         System.out.println("MainClass.getCanonicalName==" + MainClass.class.getCanonicalName());
+        System.out.println("");
+        System.out.println("用 java poet 输出当前类文件");
+        System.out.println("");
+
     }
 
     private static void genSelfCode() {
@@ -29,10 +33,11 @@ public class MainClass {
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(void.class)
                 .addParameter(String[].class, "args")
+                .addStatement("someTest()")
                 .addStatement("genSelfCode()")
                 .build();
 
-        TypeSpec typeSpec = TypeSpec.classBuilder("MainClass1")
+        TypeSpec typeSpec = TypeSpec.classBuilder("MainClass")
                 .addModifiers(Modifier.PUBLIC)
                 .addMethod(methodSpec)
                 .build();

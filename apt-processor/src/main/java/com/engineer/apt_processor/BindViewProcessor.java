@@ -6,6 +6,7 @@ import com.engineer.apt_annotation.BindView;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -57,74 +58,59 @@ public class BindViewProcessor extends AbstractProcessor {
         mMessager.printMessage(Diagnostic.Kind.NOTE,"processing....");
 
         mProxyProMap.clear();
-        genCodeAuto(roundEnvironment);
+        assembleAnnotations(roundEnvironment);
+        genCodeAuto();
+
 
         mMessager.printMessage(Diagnostic.Kind.NOTE, "process finish ...");
         return true;
     }
 
-    private void genCodeAuto(RoundEnvironment roundEnvironment) {
+    private void assembleAnnotations(RoundEnvironment roundEnvironment) {
+        processAnnotations(roundEnvironment,BindView.class);
+        processAnnotations(roundEnvironment,BindString.class);
+        processAnnotations(roundEnvironment,BindOnClick.class);
+    }
 
 
-        Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(BindView.class);
+    private void processAnnotations(RoundEnvironment roundEnvironment,Class<? extends Annotation> className) {
 
+        Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(className);
 
         for (Element element : elements) {
-            VariableElement variableElement= (VariableElement) element;
+            VariableElement variableElement = (VariableElement) element;
             TypeElement classElement = (TypeElement) variableElement.getEnclosingElement();
-            String fullClassName=classElement.getQualifiedName().toString();
+            String fullClassName = classElement.getQualifiedName().toString();
             ClassCreatorProxyPro proxy = mProxyProMap.get(fullClassName);
             if (proxy == null) {
                 proxy = new ClassCreatorProxyPro(mElementUtils, classElement);
                 mProxyProMap.put(fullClassName, proxy);
             }
 
-            BindView bindAnnotation = variableElement.getAnnotation(BindView.class);
-            int id=bindAnnotation.value();
-            proxy.putElement(id,variableElement);
-        }
-
-        elements = roundEnvironment.getElementsAnnotatedWith(BindString.class);
-        for (Element element : elements) {
-            VariableElement variableElement = (VariableElement) element;
-            TypeElement classElement = (TypeElement) variableElement.getEnclosingElement();
-            String fullClassName = classElement.getQualifiedName().toString();
-            ClassCreatorProxyPro proxyPro = mProxyProMap.get(fullClassName);
-            if (proxyPro == null) {
-                proxyPro = new ClassCreatorProxyPro(mElementUtils, classElement);
-                mProxyProMap.put(fullClassName,proxyPro);
+            if (className.getCanonicalName().equals(BindView.class.getCanonicalName())) {
+                BindView bindAnnotation = variableElement.getAnnotation(BindView.class);
+                int id=bindAnnotation.value();
+                proxy.putElement(id,variableElement);
+            } else if (className.getCanonicalName().equals(BindString.class.getCanonicalName())) {
+                BindString bindAnnotation = variableElement.getAnnotation(BindString.class);
+                String str = bindAnnotation.value();
+                proxy.putElement(str,variableElement);
+            } else if (className.getCanonicalName().equals(BindOnClick.class.getCanonicalName())) {
+                BindOnClick bindOnClick = variableElement.getAnnotation(BindOnClick.class);
+                int[] ids=bindOnClick.value();
+                proxy.putElement(ids,variableElement);
             }
-
-            BindString bindString = variableElement.getAnnotation(BindString.class);
-            String str = bindString.value();
-            proxyPro.putElement(str,variableElement);
         }
+    }
 
-
-
-        elements = roundEnvironment.getElementsAnnotatedWith(BindOnClick.class);
-        for (Element element : elements) {
-            VariableElement variableElement = (VariableElement) element;
-            TypeElement classElement = (TypeElement) variableElement.getEnclosingElement();
-            String fullClassName= classElement.getQualifiedName().toString();
-            ClassCreatorProxyPro proxyPro = mProxyProMap.get(fullClassName);
-            if (proxyPro == null) {
-                proxyPro = new ClassCreatorProxyPro(mElementUtils, classElement);
-                mProxyProMap.put(fullClassName, proxyPro);
-            }
-
-            BindOnClick bindOnClick = variableElement.getAnnotation(BindOnClick.class);
-            int[] ids=bindOnClick.value();
-            proxyPro.putElement(ids,variableElement);
-        }
-
-
+    private void genCodeAuto() {
         for (String key : mProxyProMap.keySet()) {
             ClassCreatorProxyPro proxyPro = mProxyProMap.get(key);
             try {
                 JavaFile javaFile = JavaFile.builder(proxyPro.getPackageName(),proxyPro.generatorJavaCode()).build();
-                mMessager.printMessage(Diagnostic.Kind.NOTE,"---> create file\n" + javaFile.toString());
+                mMessager.printMessage(Diagnostic.Kind.NOTE,"---> create file start\n" + javaFile.toString());
                 javaFile.writeTo(processingEnv.getFiler());
+                mMessager.printMessage(Diagnostic.Kind.NOTE,"---> create file finish\n");
             } catch (Exception e) {
                 mMessager.printMessage(Diagnostic.Kind.NOTE, " --> create " + proxyPro.getProxyClassFullName() + "error");
             }

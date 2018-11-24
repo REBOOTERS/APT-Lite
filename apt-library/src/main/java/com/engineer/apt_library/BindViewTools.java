@@ -11,13 +11,13 @@ public class BindViewTools {
 
         Class clazz = activity.getClass();
         try {
-            Class bindViewClass = Class.forName(clazz.getName() + "_ViewBinding");
+            Class bindClass = Class.forName(clazz.getName() + "_Binding");
 
-            Method bindView = bindViewClass.getMethod("bindView", activity.getClass());
-            bindView.invoke(bindViewClass.newInstance(), activity);
+            Method bindView = bindClass.getMethod("bindView", activity.getClass());
+            bindView.invoke(bindClass.newInstance(), activity);
 
-            Method methodBingString = bindViewClass.getMethod("bindString", activity.getClass());
-            methodBingString.invoke(bindViewClass.newInstance(), activity);
+            Method methodBingString = bindClass.getMethod("bindString", activity.getClass());
+            methodBingString.invoke(bindClass.newInstance(), activity);
 
         } catch (ClassNotFoundException | IllegalAccessException |
                 InstantiationException | NoSuchMethodException | InvocationTargetException e) {
