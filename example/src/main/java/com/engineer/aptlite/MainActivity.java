@@ -16,9 +16,11 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.content) @BindString("Hello APT")
+    @BindView(R.id.content)
+    @BindString("Hello APT")
     TextView mContent;
-    @BindView(R.id.name) @BindString("APT Success")
+    @BindView(R.id.name)
+    @BindString("APT Success")
     TextView mName;
     @BindView(R.id.genCode)
     Button mGenCode;
@@ -29,10 +31,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BindViewTools.bind(this);
 
-        mGenCode.setOnClickListener( v -> testcode());
+        mGenCode.setOnClickListener(v -> System.out.println("the value is " + testCode()));
     }
 
-    private String testcode() {
+    private String testCode() {
         JSONObject json = new JSONObject();
         try {
             json.put("111", "222");
