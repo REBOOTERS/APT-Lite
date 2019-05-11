@@ -1,11 +1,13 @@
 package com.engineer.apt_library;
 
 import android.app.Activity;
+import android.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class BindViewTools {
+    private static final String TAG = "BindViewTools";
 
     public static void bind(Activity activity) {
 
@@ -22,6 +24,7 @@ public class BindViewTools {
         } catch (ClassNotFoundException | IllegalAccessException |
                 InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
+            Log.e(TAG, "bind: " + e.getMessage());
         }
     }
 }

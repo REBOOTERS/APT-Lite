@@ -51,6 +51,7 @@ public class BindViewProcessor extends AbstractProcessor {
         super.init(processingEnvironment);
         mMessager=processingEnvironment.getMessager();
         mElementUtils=processingEnvironment.getElementUtils();
+        mMessager.printMessage(Diagnostic.Kind.NOTE,"init");
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.engineer.poet;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.File;
@@ -29,6 +31,7 @@ public class MainClass {
     }
 
     private static void genSelfCode() {
+
         MethodSpec methodSpec = MethodSpec.methodBuilder("main")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(void.class)
@@ -43,12 +46,6 @@ public class MainClass {
                 .build();
 
         JavaFile javaFile = JavaFile.builder("com.engineer.poet", typeSpec)
-                .addStaticImport(com.squareup.javapoet.JavaFile.class, "*")
-                .addStaticImport(com.squareup.javapoet.MethodSpec.class, "*")
-                .addStaticImport(com.squareup.javapoet.TypeSpec.class, "*")
-                .addStaticImport(java.io.File.class, "*")
-                .addStaticImport(java.io.IOException.class, "*")
-                .addStaticImport(javax.lang.model.element.Modifier.class, "*")
                 .build();
 
         File outputFile = new File("poet/build/");

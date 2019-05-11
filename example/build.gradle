@@ -34,9 +34,8 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$ext.support_versioin"
     implementation "androidx.constraintlayout:constraintlayout:$ext.constraint_layout"
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
-
+    androidTestImplementation 'androidx.test:runner:1.2.0-alpha05'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha05'
 
     implementation project(':apt-library')
     annotationProcessor project(':apt-processor')
