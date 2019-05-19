@@ -1,5 +1,7 @@
 package com.engineer.apt_processor;
 
+import com.engineer.apt_annotation.BindView;
+import com.engineer.apt_processor.model.ResModel;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
@@ -29,8 +31,8 @@ public class ClassCreatorProxyPro {
     private String mPackageName;
     private TypeElement mTypeElement;
     private Map<Integer, VariableElement> mVariableElementMap = new HashMap<>();
-    private Map<int[], VariableElement> mOnClickElementMap = new HashMap<>();
     private Map<String, VariableElement> mStringElementMap = new HashMap<>();
+    private Map<ResModel, VariableElement> mResModelVariableElementMap = new HashMap<>();
 
     public ClassCreatorProxyPro(Elements elementUtils, TypeElement classElement) {
         this.mTypeElement = classElement;
@@ -49,16 +51,16 @@ public class ClassCreatorProxyPro {
         mStringElementMap.put(string, element);
     }
 
-    public void putElement(int[] ids, VariableElement element) {
-        mOnClickElementMap.put(ids, element);
+    public void putElement(ResModel string, VariableElement element) {
+        mResModelVariableElementMap.put(string, element);
     }
+
 
     public TypeSpec generatorJavaCode() {
         TypeSpec typeSpec = TypeSpec.classBuilder(mBindingClassName)
                 .addModifiers(Modifier.PUBLIC)
                 .addMethod(generateViewBindMethod())
                 .addMethod(generateStringBindMethod())
-//                .addMethod(generateViewOnClickBindMethod())
                 .build();
         return typeSpec;
     }
@@ -78,6 +80,13 @@ public class ClassCreatorProxyPro {
                     + "(" + type + ")(((android.app.Activity)host).findViewById( " + id + "));\n");
         }
 
+        for (ResModel model : mResModelVariableElementMap.keySet()) {
+            if (model.mAnnotatedType instanceof BindView) {
+                System.out.println("--------------" + model.idRes);
+            }
+        }
+
+
         return builder.build();
     }
 
@@ -91,27 +100,9 @@ public class ClassCreatorProxyPro {
         for (String string : mStringElementMap.keySet()) {
             VariableElement element = mStringElementMap.get(string);
             String name = element.getSimpleName().toString();
-            builder.addCode("host." + name + ".setText(" +"\"" +string+"\"" + ");\n\n");
+            builder.addCode("host." + name + ".setText(" + "\"" + string + "\"" + ");\n\n");
         }
 
-        return builder.build();
-    }
-
-    private MethodSpec generateViewOnClickBindMethod() {
-        ClassName className = ClassName.bestGuess(mTypeElement.getQualifiedName().toString());
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("onClick")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(TypeName.VOID)
-                .addParameter(View.class, "view");
-
-        for (int[] ids : mOnClickElementMap.keySet()) {
-            VariableElement element = mOnClickElementMap.get(ids);
-            String name = element.getSimpleName().toString();
-            String type = element.asType().toString();
-            for (int id : ids) {
-
-            }
-        }
 
         return builder.build();
     }
