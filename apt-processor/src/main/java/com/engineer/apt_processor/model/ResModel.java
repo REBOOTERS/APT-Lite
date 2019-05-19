@@ -2,6 +2,7 @@ package com.engineer.apt_processor.model;
 
 import org.omg.CORBA.PUBLIC_MEMBER;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedType;
 
 /**
@@ -10,14 +11,14 @@ import java.lang.reflect.AnnotatedType;
  */
 public class ResModel {
 
-    public AnnotatedType mAnnotatedType;
+    public Class<? extends Annotation> className;
     public String idRes;
     public int id;
 
 
-    public ResModel(String idRes, int id, AnnotatedType annotatedType) {
+    public ResModel(String idRes, int id, Class<? extends Annotation> className) {
         this.idRes = idRes;
         this.id = id;
-        this.mAnnotatedType = annotatedType;
+        this.className = className;
     }
 }

@@ -4,7 +4,6 @@ import com.engineer.apt_annotation.BindView;
 import com.engineer.apt_processor.model.ResModel;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
-import javax.swing.text.View;
 
 /**
  * @version V1.0
@@ -26,11 +24,11 @@ public class ClassCreatorProxyPro {
 
 
     public static final String VIEW_BINDING = "_Binding";
+    public static final String PARAM_NAME = "target";
 
     private String mBindingClassName;
     private String mPackageName;
     private TypeElement mTypeElement;
-    private Map<Integer, VariableElement> mVariableElementMap = new HashMap<>();
     private Map<String, VariableElement> mStringElementMap = new HashMap<>();
     private Map<ResModel, VariableElement> mResModelVariableElementMap = new HashMap<>();
 
@@ -41,10 +39,6 @@ public class ClassCreatorProxyPro {
         String className = mTypeElement.getSimpleName().toString();
         this.mPackageName = packageName;
         this.mBindingClassName = className + VIEW_BINDING;
-    }
-
-    public void putElement(int id, VariableElement element) {
-        mVariableElementMap.put(id, element);
     }
 
     public void putElement(String string, VariableElement element) {
@@ -70,19 +64,16 @@ public class ClassCreatorProxyPro {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("bindView")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
-                .addParameter(className, "host");
-
-        for (int id : mVariableElementMap.keySet()) {
-            VariableElement element = mVariableElementMap.get(id);
-            String name = element.getSimpleName().toString();
-            String type = element.asType().toString();
-            builder.addCode("host." + name + " = "
-                    + "(" + type + ")(((android.app.Activity)host).findViewById( " + id + "));\n");
-        }
+                .addParameter(className, PARAM_NAME);
 
         for (ResModel model : mResModelVariableElementMap.keySet()) {
-            if (model.mAnnotatedType instanceof BindView) {
+            if (model.className == BindView.class) {
                 System.out.println("--------------" + model.idRes);
+
+                VariableElement element = mResModelVariableElementMap.get(model);
+                String name = element.getSimpleName().toString();
+                String code = PARAM_NAME + "." + name + "=" + PARAM_NAME + "." + "findViewById(" + model.idRes + ");\n";
+                builder.addCode(code);
             }
         }
 
@@ -95,12 +86,13 @@ public class ClassCreatorProxyPro {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("bindString")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
-                .addParameter(className, "host");
+                .addParameter(className, PARAM_NAME);
 
         for (String string : mStringElementMap.keySet()) {
+
             VariableElement element = mStringElementMap.get(string);
             String name = element.getSimpleName().toString();
-            builder.addCode("host." + name + ".setText(" + "\"" + string + "\"" + ");\n\n");
+            builder.addCode(PARAM_NAME + "." + name + ".setText(" + "\"" + string + "\"" + ");\n\n");
         }
 
 
