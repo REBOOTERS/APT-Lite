@@ -1,9 +1,7 @@
 package com.engineer.poet;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.File;
@@ -15,6 +13,7 @@ import javax.lang.model.element.Modifier;
 public class MainClass {
 
     public static void main(String[] args) {
+        People people = new People();
         someTest();
         genSelfCode();
     }
@@ -36,6 +35,7 @@ public class MainClass {
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(void.class)
                 .addParameter(String[].class, "args")
+                .addStatement("$T people=new $T",People.class,People.class)
                 .addStatement("someTest()")
                 .addStatement("genSelfCode()")
                 .build();
@@ -52,7 +52,7 @@ public class MainClass {
 
         try {
             javaFile.writeTo(outputFile);
-            javaFile.writeTo(System.out);
+            javaFile.writeTo(System.err);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
