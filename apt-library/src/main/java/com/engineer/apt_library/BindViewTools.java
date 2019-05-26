@@ -15,16 +15,28 @@ public class BindViewTools {
         try {
             Class bindClass = Class.forName(clazz.getName() + "_Binding");
 
-            Method bindView = bindClass.getMethod("bindView", activity.getClass());
-            bindView.invoke(bindClass.newInstance(), activity);
+            bindInternal(activity, bindClass, "bindView");
 
-            Method methodBingString = bindClass.getMethod("bindString", activity.getClass());
-            methodBingString.invoke(bindClass.newInstance(), activity);
+            bindInternal(activity, bindClass, "bindString");
 
-        } catch (ClassNotFoundException | IllegalAccessException |
-                InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            Log.e(TAG, "bind: " + e.getMessage());
+            Log.e(TAG, "bindInternal: " + e.getMessage());
+        }
+    }
+
+    private static void bindInternal(Activity activity, Class bindClass, String bindString) {
+        try {
+            Method methodBingString = bindClass.getMethod(bindString, activity.getClass());
+            methodBingString.invoke(bindClass.newInstance(), activity);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
     }
 }

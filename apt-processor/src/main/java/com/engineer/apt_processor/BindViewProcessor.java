@@ -2,6 +2,7 @@ package com.engineer.apt_processor;
 
 import com.engineer.apt_annotation.BindString;
 import com.engineer.apt_annotation.BindView;
+import com.engineer.apt_processor.creator.BindCreatorProxy;
 import com.engineer.apt_processor.model.ResModel;
 import com.google.auto.service.AutoService;
 import com.hendraanggrian.RParser;
@@ -25,7 +26,7 @@ import javax.tools.Diagnostic;
 public class BindViewProcessor extends BaseProcessor {
 
 
-    private Map<String, ClassCreatorProxyPro> mProxyProMap = new HashMap<>();
+    private Map<String, BindCreatorProxy> mProxyProMap = new HashMap<>();
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
@@ -54,7 +55,6 @@ public class BindViewProcessor extends BaseProcessor {
         processAnnotations(roundEnvironment, BindString.class);
     }
 
-
     private void processAnnotations(RoundEnvironment roundEnvironment, Class<? extends Annotation> className) {
 
         RParser parser = RParser.builder(processingEnv)
@@ -70,9 +70,9 @@ public class BindViewProcessor extends BaseProcessor {
             VariableElement variableElement = (VariableElement) element;
             TypeElement classElement = (TypeElement) variableElement.getEnclosingElement();
             String fullClassName = classElement.getQualifiedName().toString();
-            ClassCreatorProxyPro proxy = mProxyProMap.get(fullClassName);
+            BindCreatorProxy proxy = mProxyProMap.get(fullClassName);
             if (proxy == null) {
-                proxy = new ClassCreatorProxyPro(mElementUtils, classElement);
+                proxy = new BindCreatorProxy(mElementUtils, classElement);
                 mProxyProMap.put(fullClassName, proxy);
             }
 
@@ -80,21 +80,7 @@ public class BindViewProcessor extends BaseProcessor {
                 BindView bindAnnotation = variableElement.getAnnotation(BindView.class);
                 int id = bindAnnotation.value();
 
-                String idRes = null;
-                String packageName = null;
-
-                for (String path : fullClassName.split("\\.")) {
-                    if (packageName == null) {
-                        packageName = path;
-                    } else {
-                        packageName = packageName + "." + path;
-                    }
-
-                    idRes = parser.parse(packageName, id);
-                    if (!idRes.equals(String.valueOf(id))) {
-                        break;
-                    }
-                }
+                String idRes = getBindViewResId(parser, fullClassName, id);
                 ResModel model = new ResModel(idRes, id, BindView.class);
                 proxy.putElement(model, variableElement);
 
@@ -106,16 +92,42 @@ public class BindViewProcessor extends BaseProcessor {
         }
     }
 
+    /**
+     * @param parser        {@link RParser}
+     * @param fullClassName 当前注解所在的类名
+     * @param id            资源的原始 id （类似 2343434343，438943493，在 R 文件中）
+     * @return 返回资源的 R.id.xxx (包含完整包名）
+     */
+    private String getBindViewResId(RParser parser, String fullClassName, int id) {
+        String idRes = null;
+        String packageName = null;
+
+        for (String path : fullClassName.split("\\.")) {
+            if (packageName == null) {
+                packageName = path;
+            } else {
+                packageName = packageName + "." + path;
+            }
+
+            idRes = parser.parse(packageName, id);
+            if (!idRes.equals(String.valueOf(id))) {
+                break;
+            }
+        }
+        return idRes;
+    }
+
     private void genCodeAuto() {
         for (String key : mProxyProMap.keySet()) {
-            ClassCreatorProxyPro proxyPro = mProxyProMap.get(key);
+            BindCreatorProxy proxyPro = mProxyProMap.get(key);
             try {
                 JavaFile javaFile = JavaFile.builder(proxyPro.getPackageName(), proxyPro.generatorJavaCode()).build();
                 mMessager.printMessage(Diagnostic.Kind.NOTE, "---> create file start\n" + javaFile.toString());
                 javaFile.writeTo(mFiler);
                 mMessager.printMessage(Diagnostic.Kind.NOTE, "---> create file finish\n");
             } catch (Exception e) {
-                mMessager.printMessage(Diagnostic.Kind.NOTE, " --> create " + proxyPro.getProxyClassFullName() + "error");
+                mMessager.printMessage(Diagnostic.Kind.NOTE, " --> create " +
+                        proxyPro.getProxyClassFullName() + " error,because " + e.getMessage());
             }
         }
 

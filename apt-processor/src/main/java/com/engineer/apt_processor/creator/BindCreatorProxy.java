@@ -1,4 +1,4 @@
-package com.engineer.apt_processor;
+package com.engineer.apt_processor.creator;
 
 import com.engineer.apt_annotation.BindView;
 import com.engineer.apt_processor.model.ResModel;
@@ -20,7 +20,7 @@ import javax.lang.model.util.Elements;
  * @author: zhuyongging
  * @date: 2018-08-22 18:29
  */
-public class ClassCreatorProxyPro {
+public class BindCreatorProxy {
 
 
     public static final String VIEW_BINDING = "_Binding";
@@ -32,7 +32,7 @@ public class ClassCreatorProxyPro {
     private Map<String, VariableElement> mStringElementMap = new HashMap<>();
     private Map<ResModel, VariableElement> mResModelVariableElementMap = new HashMap<>();
 
-    public ClassCreatorProxyPro(Elements elementUtils, TypeElement classElement) {
+    public BindCreatorProxy(Elements elementUtils, TypeElement classElement) {
         this.mTypeElement = classElement;
         PackageElement packageElement = elementUtils.getPackageOf(mTypeElement);
         String packageName = packageElement.getQualifiedName().toString();
@@ -53,6 +53,7 @@ public class ClassCreatorProxyPro {
     public TypeSpec generatorJavaCode() {
         TypeSpec typeSpec = TypeSpec.classBuilder(mBindingClassName)
                 .addModifiers(Modifier.PUBLIC)
+                .addModifiers(Modifier.FINAL)
                 .addMethod(generateViewBindMethod())
                 .addMethod(generateStringBindMethod())
                 .build();
@@ -68,7 +69,7 @@ public class ClassCreatorProxyPro {
 
         for (ResModel model : mResModelVariableElementMap.keySet()) {
             if (model.className == BindView.class) {
-                System.out.println("--------------" + model.idRes);
+//                System.out.println("--------------" + model.idRes);
 
                 VariableElement element = mResModelVariableElementMap.get(model);
                 String name = element.getSimpleName().toString();
