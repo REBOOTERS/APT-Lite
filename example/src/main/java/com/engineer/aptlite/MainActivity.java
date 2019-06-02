@@ -1,11 +1,16 @@
 package com.engineer.aptlite;
 
 import android.os.Bundle;
+import android.util.ArrayMap;
+import android.util.SparseArray;
+import android.util.SparseBooleanArray;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.collection.SparseArrayCompat;
 
 import com.engineer.apt_annotation.BindString;
 import com.engineer.apt_annotation.BindView;
