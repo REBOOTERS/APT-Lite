@@ -27,12 +27,17 @@ class BindViewProcessor {
     - genCodeAuto()
 }
 
-AbstractProcessor <|- BaseProcessor
-BaseProcessor <|- BindViewProcessor
 
-BindCreatorProxy <.. BindViewProcessor
-BindCreatorProxy *.. ResModel
+BindViewProcessor -up-|> BaseProcessor : extends
+BaseProcessor -up-|> AbstractProcessor : extends
 
+BindCreatorProxy <.. BindViewProcessor : dependence
+BindCreatorProxy *--up- ResModel : composition
 
+BindViewProcessor *--left- BindView : composition
+BindViewProcessor *--right- BindString : composition
+
+annotation BindView
+annotation BindString
 
 @enduml
