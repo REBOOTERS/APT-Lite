@@ -40,16 +40,20 @@ public class BindViewProcessor extends BaseProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         mMessager.printMessage(Diagnostic.Kind.NOTE, "processing....");
-
+        // 代理方法清空
         mProxyProMap.clear();
+        // 处理注解，完成需要生成代码的前期准备
         assembleAnnotations(roundEnvironment);
+        // 生成代码
         genCodeAuto();
-
-
         mMessager.printMessage(Diagnostic.Kind.NOTE, "process finish ...");
         return true;
     }
 
+    /**
+     *
+     * @param roundEnvironment 集中收集所有需要处理的 注解
+     */
     private void assembleAnnotations(RoundEnvironment roundEnvironment) {
         processAnnotations(roundEnvironment, BindView.class);
         processAnnotations(roundEnvironment, BindString.class);
@@ -64,12 +68,16 @@ public class BindViewProcessor extends BaseProcessor {
 
         parser.scan(roundEnvironment);
 
+        // 获取所有打上 className 类型注解的元素
         Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(className);
-
+        // 遍历元素
         for (Element element : elements) {
+            // 因为 BindView 和 BindString 的 target 是 ElementType.FIELD，因此这里强转理论上是安全的，
+            // 除非故意把注解打在了错误的位置
             VariableElement variableElement = (VariableElement) element;
             TypeElement classElement = (TypeElement) variableElement.getEnclosingElement();
             String fullClassName = classElement.getQualifiedName().toString();
+
             BindCreatorProxy proxy = mProxyProMap.get(fullClassName);
             if (proxy == null) {
                 proxy = new BindCreatorProxy(mElementUtils, classElement);
@@ -77,14 +85,16 @@ public class BindViewProcessor extends BaseProcessor {
             }
 
             if (className.getCanonicalName().equals(BindView.class.getCanonicalName())) {
+                // BindView 注解处理
                 BindView bindAnnotation = variableElement.getAnnotation(BindView.class);
                 int id = bindAnnotation.value();
-
+                // 返回当前的 id 的 human 值，类似 R.id.xxx
                 String idRes = getBindViewResId(parser, fullClassName, id);
                 ResModel model = new ResModel(idRes, id, BindView.class);
                 proxy.putElement(model, variableElement);
 
             } else if (className.getCanonicalName().equals(BindString.class.getCanonicalName())) {
+                // BindString 注解处理
                 BindString bindAnnotation = variableElement.getAnnotation(BindString.class);
                 String str = bindAnnotation.value();
                 proxy.putElement(str, variableElement);

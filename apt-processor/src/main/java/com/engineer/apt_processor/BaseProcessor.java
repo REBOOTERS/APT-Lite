@@ -13,8 +13,11 @@ import javax.tools.Diagnostic;
  * @since: 2019-05-19
  */
 public abstract class BaseProcessor extends AbstractProcessor {
+    // 进行日志打印的接口
     Messager mMessager;
+    // Element 元素处理的接口
     Elements mElementUtils;
+    // 帮助文件生成的接口
     Filer mFiler;
 
     @Override

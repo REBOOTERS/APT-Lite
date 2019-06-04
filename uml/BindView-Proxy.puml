@@ -1,0 +1,38 @@
+@startuml
+
+class ResModel {
+
+}
+
+class BindCreatorProxy {
+    - mStringElementMap:HashMap<String,VariableElement>
+    - mResModelVariableElementMap:HashMap<ResModel, VariableElement>
+
+    + putElement(String string, VariableElement element)
+    + putElement(ResModel string, VariableElement element)
+    + generatorJavaCode():TypeSpec
+}
+
+abstract class AbstractProcessor
+abstract class BaseProcessor {
+    + getSupportedSourceVersion()
+    + init()
+}
+class BindViewProcessor {
+    + getSupportedAnnotationTypes(): Set<String>
+    + process()
+    - assembleAnnotations()
+    - processAnnotations()
+    - getBindViewResId()
+    - genCodeAuto()
+}
+
+AbstractProcessor <|- BaseProcessor
+BaseProcessor <|- BindViewProcessor
+
+BindCreatorProxy <.. BindViewProcessor
+BindCreatorProxy *.. ResModel
+
+
+
+@enduml
