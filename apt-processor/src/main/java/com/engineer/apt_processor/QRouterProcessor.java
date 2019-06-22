@@ -18,7 +18,7 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
 /**
- * @author: zhuyongging
+ * @author: rookie
  * @since: 2019-05-26
  */
 @SupportedAnnotationTypes({QRouterProcessor.TYPE_Q_ROUTER})

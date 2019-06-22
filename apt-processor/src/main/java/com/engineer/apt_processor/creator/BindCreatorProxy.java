@@ -17,7 +17,7 @@ import javax.lang.model.util.Elements;
 
 /**
  * @version V1.0
- * @author: zhuyongging
+ * @author: rookie
  * @date: 2018-08-22 18:29
  */
 public class BindCreatorProxy {
@@ -69,7 +69,6 @@ public class BindCreatorProxy {
 
         for (ResModel model : mResModelVariableElementMap.keySet()) {
             if (model.className == BindView.class) {
-//                System.out.println("--------------" + model.idRes);
 
                 VariableElement element = mResModelVariableElementMap.get(model);
                 String name = element.getSimpleName().toString();

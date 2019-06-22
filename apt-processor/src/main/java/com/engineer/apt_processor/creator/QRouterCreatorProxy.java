@@ -15,11 +15,11 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
 /**
- * @author: zhuyongging
+ * @author: rookie
  * @since: 2019-05-26
  */
 public class QRouterCreatorProxy {
-    public static final String Q_ROUTER_CLASS_NAME = "QRouterTable";
+    private static final String Q_ROUTER_CLASS_NAME = "QRouterTable";
 
     private HashMap<String, String> elements = new HashMap<>();
     private String mPackageName;
@@ -46,11 +46,7 @@ public class QRouterCreatorProxy {
      * @return HashMap<String, String>
      */
     private MethodSpec genRouterTable() {
-//        ParameterizedTypeName type = ParameterizedTypeName.get(ClassName.get(String.class));
-//        ParameterSpec parameterSpec = ParameterSpec.builder(type, "string").build();
-
             /*
-
               ```Map<String, String>```
              */
         ParameterizedTypeName inputMapTypeOfGroup = ParameterizedTypeName.get(
@@ -59,12 +55,8 @@ public class QRouterCreatorProxy {
                 ClassName.get(String.class)
         );
 
-        ParameterSpec parameterSpec = ParameterSpec.builder(inputMapTypeOfGroup, "atlas").build();
-
-
         MethodSpec.Builder builder = MethodSpec.methodBuilder("map")
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-//                .addParameter(parameterSpec)
                 .returns(inputMapTypeOfGroup);
 
         builder.addCode("\n");

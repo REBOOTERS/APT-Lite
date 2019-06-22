@@ -6,7 +6,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedType;
 
 /**
- * @author: zhuyongging
+ * @author: rookie
  * @since: 2019-05-19
  */
 public class ResModel {

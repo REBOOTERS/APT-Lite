@@ -9,7 +9,7 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 /**
- * @author: zhuyongging
+ * @author: rookie
  * @since: 2019-05-19
  */
 public abstract class BaseProcessor extends AbstractProcessor {

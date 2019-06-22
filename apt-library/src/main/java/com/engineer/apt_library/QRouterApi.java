@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 /**
- * @author: zhuyongging
+ * @author: rookie
  * @since: 2019-05-26
  */
 public class QRouterApi {
