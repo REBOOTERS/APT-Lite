@@ -3,7 +3,9 @@ package com.engineer.apt_processor;
 
 import com.engineer.apt_annotation.QRouter;
 import com.engineer.apt_processor.creator.QRouterCreatorProxy;
+import com.engineer.apt_processor.model.RouterModel;
 import com.google.auto.service.AutoService;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
@@ -52,8 +54,9 @@ public class QRouterProcessor extends BaseProcessor {
                 mMessager.printMessage(Diagnostic.Kind.NOTE, "annotation==" + routerAnnotation.value());
                 String router = routerAnnotation.value();
                 String target = ((TypeElement) element).getQualifiedName().toString();
-
-                mQRouterCreatorProxy.putElement(router, target);
+                ClassName className = ClassName.get((TypeElement) element);
+                RouterModel model = new RouterModel(className);
+                mQRouterCreatorProxy.putElement(router, model);
 
             } else {
                 mMessager.printMessage(Diagnostic.Kind.ERROR, "annotation on mistake type, the type should be class");

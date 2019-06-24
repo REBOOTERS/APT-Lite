@@ -1,5 +1,6 @@
 package com.engineer.apt_processor.creator;
 
+import com.engineer.apt_processor.model.RouterModel;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
@@ -21,7 +22,7 @@ import javax.lang.model.util.Elements;
 public class QRouterCreatorProxy {
     private static final String Q_ROUTER_CLASS_NAME = "QRouterTable";
 
-    private HashMap<String, String> elements = new HashMap<>();
+    private HashMap<String, RouterModel> elements = new HashMap<>();
     private String mPackageName;
 
 
@@ -30,7 +31,7 @@ public class QRouterCreatorProxy {
         mPackageName = packageElement.getQualifiedName().toString();
     }
 
-    public void putElement(String router, String targetClass) {
+    public void putElement(String router, RouterModel targetClass) {
         elements.put(router, targetClass);
     }
 
@@ -64,8 +65,8 @@ public class QRouterCreatorProxy {
         builder.addCode("\n");
 
         for (String key : elements.keySet()) {
-            String target = elements.get(key);
-            String code = "tables.put(\"" + key + "\",\"" + target + "\");\n";
+            RouterModel target = elements.get(key);
+            String code = "tables.put(\"" + key + "\",\"" + target.target + "\");\n";
             builder.addCode(code);
         }
         builder.addCode("return tables;\n");
