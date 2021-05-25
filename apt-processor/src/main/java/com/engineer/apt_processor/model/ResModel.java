@@ -1,9 +1,6 @@
 package com.engineer.apt_processor.model;
 
-import org.omg.CORBA.PUBLIC_MEMBER;
-
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedType;
 
 /**
  * @author: rookie

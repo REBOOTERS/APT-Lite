@@ -69,3 +69,8 @@ freeline_project_description.json
 # poet
 
 poet/
+*.classpath
+*.project
+*/*.classpath
+*/*.settings/
+*.settings/

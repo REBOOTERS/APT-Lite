@@ -20,7 +20,7 @@ public class QRouterApi {
             long begin = System.currentTimeMillis();
             String log;
             Class tableClass = Class.forName("com.engineer.aptlite.QRouterTable");
-            Method methodMap = tableClass.getMethod("map", null);
+            Method methodMap = tableClass.getMethod("map");
             HashMap<String, String> tables = (HashMap<String, String>) methodMap.invoke(tableClass.newInstance(), null);
 
             System.err.println("tables===" + tables);
